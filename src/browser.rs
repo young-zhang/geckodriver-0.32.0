@@ -85,10 +85,14 @@ impl LocalBrowser {
 
         let is_custom_profile = matches!(options.profile, ProfileType::Path(_));
 
-        let mut profile = match options.profile {
-            ProfileType::Named => None,
-            ProfileType::Path(x) => Some(x),
-            ProfileType::Temporary => Some(Profile::new(profile_root)?),
+        let mut profile = if let Ok(profile_dir) = std::env::var("FIREFOX_PROFILE_DIR") {
+            Some(Profile::new_from_path(Path::new(&profile_dir))?)
+        } else {
+            match options.profile {
+                ProfileType::Named => None,
+                ProfileType::Path(x) => Some(x),
+                ProfileType::Temporary => Some(Profile::new(profile_root)?),
+            }
         };
 
         let (profile_path, prefs_backup) = if let Some(ref mut profile) = profile {

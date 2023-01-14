@@ -379,6 +379,11 @@ fn inner_main(cmd: &mut Command) -> ProgramResult<()> {
 }
 
 fn main() {
+    eprintln!("Startup args: {:#?}.", env::args().collect::<Vec<String>>());
+    if let Ok(profile_dir) = env::var("FIREFOX_PROFILE_DIR") {
+        eprintln!("Firefox profile dir: {:?}.", profile_dir);
+    }
+
     use std::process::exit;
 
     let mut cmd = make_command();
@@ -531,7 +536,7 @@ fn print_help(cmd: &mut Command) {
 }
 
 fn print_version() {
-    println!("geckodriver {}", build::build_info());
+    println!("Young's custom geckodriver {}", build::build_info());
     println!();
     println!("The source code of this program is available from");
     println!("testing/geckodriver in https://hg.mozilla.org/mozilla-central.");
